@@ -39,6 +39,10 @@ in {
       default = "https://gitlab.staging.haskell.org";
       decsription = "Root URL for the gitlab instance";
     };
+    pkg = mkOption {
+      type = types.package;
+      description = "ghc-ci package to use";
+    };
   };
 
   config = mkIf cfg.enable {
@@ -49,7 +53,7 @@ in {
       path = [ pkgs.gitAndTools.gitMinimal ];
       serviceConfig = {
         ExecStart = ''
-        ${ghc-ci}/bin/ghc-ci-server --user=${cfg.github-user} --project=${cfg.github-project} --circleci=${cfg.circleci-token-file} --key=${cfg.github-push-keyfile} --repos=${cfg.workdir} --gitlab=${cfg.gitlab-url} --port=${cfg.port}
+        ${cfg.pkg}/bin/ghc-ci-server --user=${cfg.github-user} --project=${cfg.github-project} --circleci=${cfg.circleci-token-file} --key=${cfg.github-push-keyfile} --repos=${cfg.workdir} --gitlab=${cfg.gitlab-url} --port=${cfg.port}
         '';
         Type = "simple";
         User = "ghc-ci";
