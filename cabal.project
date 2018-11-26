@@ -1,0 +1,6 @@
+packages: .
+
+source-repository-package
+    type: git
+    location: https://github.com/alpmestan/circlehs
+    tag: 3a171aedc1ef613986fbe65fdf3d8512e3d45237
