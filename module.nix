@@ -37,7 +37,7 @@ in {
     gitlab-url = mkOption {
       type = types.str;
       default = "https://gitlab.staging.haskell.org";
-      decsription = "Root URL for the gitlab instance";
+      description = "Root URL for the gitlab instance";
     };
     pkg = mkOption {
       type = types.package;
@@ -50,21 +50,31 @@ in {
       description = "GHC CI server";
       after = [ "network-online.target" ];
       wantedBy = [ "multi-user.target" ];
-      path = [ pkgs.gitAndTools.gitMinimal ];
+      path = [ pkgs.gitAndTools.git ];
       serviceConfig = {
         ExecStart = ''
-        ${cfg.pkg}/bin/ghc-ci-server --user=${cfg.github-user} --project=${cfg.github-project} --circleci=${cfg.circleci-token-file} --key=${cfg.github-push-keyfile} --repos=${cfg.workdir} --gitlab=${cfg.gitlab-url} --port=${cfg.port}
+          ${cfg.pkg}/bin/ghc-ci-server \
+              --user=${cfg.github-user} \
+              --project=${cfg.github-repo} \
+              --circleci=${cfg.circleci-token-file} \
+              --key=${cfg.github-push-keyfile} \
+              --repos=${cfg.workdir} \
+              --gitlab=${cfg.gitlab-url} \
+              --port=${toString cfg.port}
         '';
         Type = "simple";
-        User = "ghc-ci";
-        Group = "ghc-ci"
+        User = "ghcci";
+        Group = "ghcci";
         Restart = "on-failure";
       };
     };
 
-    users.users.ghc-ci = {
+    users.groups.ghcci = {};
+
+    users.users.ghcci = {
       description = "GHC CI server";
       createHome = true;
+      group = "ghcci";
       home = cfg.workdir;
     };
   };
