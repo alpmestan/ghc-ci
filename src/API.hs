@@ -9,6 +9,6 @@ import Servant.API
 import Types
 
 type API =
-  "job" :> ReqBody '[JSON] BuildRequest :> Post '[JSON] BuildNumber :<|>
+  "job" :> ReqBody '[JSON] BuildRequest :> Post '[JSON] BuildDetails :<|>
   "job" :> Capture "build num" BuildNumber :> Get '[JSON] BuildInfo :<|>
   "job" :> Capture "build num" BuildNumber :> "artifacts" :> Get '[JSON] [BuildArtifact]

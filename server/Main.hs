@@ -29,7 +29,7 @@ type App = ReaderT Config (ExceptT CIError IO)
 server :: ServerT API App
 server = newJob :<|> getJobStatus :<|> getJobArtifacts
 
-newJob :: BuildRequest -> App BuildNumber
+newJob :: BuildRequest -> App BuildDetails
 newJob req = do
   createGithubBranch req
   createCircleCIBuild req
@@ -40,13 +40,21 @@ createGithubBranch req = do
   r <- liftIO (cloneAndPush cfg req)
   maybe (pure ()) (throwError . GitProblem) r
 
-createCircleCIBuild :: BuildRequest -> App BuildNumber
+createCircleCIBuild :: BuildRequest -> App BuildDetails
 createCircleCIBuild req = do
   cfg <- ask
   r <- liftIO (buildOnCircleCI cfg req)
   case r of
     Left e -> throwError (CircleCIError e)
-    Right a -> return (number a)
+    Right a -> return $
+      let num  = number a
+          usr  = githubUser cfg
+          proj = githubProject cfg
+          link = "https://circleci.com/gh/"
+              ++ usr ++ "/"
+              ++ proj ++ "/"
+              ++ show num
+      in BuildDetails num link
 
 getJobStatus :: BuildNumber -> App BuildInfo
 getJobStatus num = do

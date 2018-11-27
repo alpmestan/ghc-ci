@@ -9,6 +9,7 @@ import Data.Int
 import Data.Monoid
 import Data.Text (Text)
 import GHC.Generics
+import Network.CircleCI.Build
 import Web.HttpApiData
 
 import qualified Data.Text as T
@@ -59,3 +60,11 @@ data BuildStatus = BuildStatus String
 
 instance FromJSON BuildStatus
 instance ToJSON BuildStatus
+
+data BuildDetails = BuildDetails
+  { build_num :: BuildNumber
+  , url       :: String
+  } deriving (Eq, Show, Generic)
+
+instance FromJSON BuildDetails
+instance ToJSON BuildDetails
