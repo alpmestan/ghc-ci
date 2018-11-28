@@ -24,7 +24,7 @@ library
                        text
   hs-source-dirs:      src
   default-language:    Haskell2010
-  ghc-options:         -Wall -Werror
+  ghc-options:         -Wall
 
 executable ghc-ci-server
   main-is:             Main.hs
@@ -49,4 +49,4 @@ executable ghc-ci-server
                        warp
   hs-source-dirs:      server
   default-language:    Haskell2010
-  ghc-options:         -Wall -Werror
+  ghc-options:         -Wall
