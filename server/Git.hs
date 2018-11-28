@@ -22,10 +22,19 @@ cloneAndPush :: Config -> BuildRequest -> IO (Maybe GitError)
 cloneAndPush Config{..} BuildRequest{..} = withEnv "GIT_SSH_COMMAND" sshCmd $ do
   r <- withTempDirectory reposDir "ghc-gitlab" $ \tmp -> runExceptT $ do
     let dir = gitDir tmp
+    ls reposDir
     git ["clone", "--depth", "1", cloneUrl, tmp]
+    ls reposDir
+    ls tmp
     git [dir, "remote", "add", "gh", ghUrl]
+    ls reposDir
+    ls tmp
     git [dir, "fetch", "origin", commit source]
+    ls reposDir
+    ls tmp
     git [dir, "checkout", "-f", "-b", branch, commit source]
+    ls reposDir
+    ls tmp
     git [dir, "push", "gh", branch]
 
   return $ either (Just . id) (const Nothing) r
@@ -61,6 +70,9 @@ git args = do
   case ex of
     ExitSuccess -> return ()
     ExitFailure n -> throwError (GitError args n out err)
+
+ls :: FilePath -> ExceptT GitError IO ()
+ls dir = liftIO (callCommand $ "ls -lh " ++ dir)
 
 withEnv :: String -> String -> IO a -> IO a
 withEnv key val act = do
