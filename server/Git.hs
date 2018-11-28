@@ -72,7 +72,7 @@ git args = do
     ExitFailure n -> throwError (GitError args n out err)
 
 ls :: FilePath -> ExceptT GitError IO ()
-ls dir = liftIO (callCommand $ "ls -lh " ++ dir)
+ls dir = liftIO (callCommand $ "ls -lah " ++ dir)
 
 withEnv :: String -> String -> IO a -> IO a
 withEnv key val act = do
