@@ -23,11 +23,7 @@ cloneAndPush Config{..} BuildRequest{..} = withEnv "GIT_SSH_COMMAND" sshCmd $ do
   r <- withTempDirectory reposDir "ghc-gitlab" $ \tmp -> runExceptT $ do
     let dir = gitDir tmp
     git ["clone", cloneUrl, tmp]
-    git [dir, "remote", "add", "gh", ghUrl]
-    -- git [dir, "fetch", "origin", commit source]
-    git [dir, "submodule", "update", "--init", "--recursive"]
-    git [dir, "checkout", "-f", "-b", branch, commit source]
-    git [dir, "push", "gh", branch]
+    git [dir, "push", ghUrl, commit source ++ ":reaf/heads/" ++ branch]
 
   return $ either (Just . id) (const Nothing) r
 
