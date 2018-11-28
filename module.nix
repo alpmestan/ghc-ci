@@ -50,7 +50,7 @@ in {
       description = "GHC CI server";
       after = [ "network-online.target" ];
       wantedBy = [ "multi-user.target" ];
-      path = [ pkgs.gitAndTools.git ];
+      path = [ pkgs.gitAndTools.git pkgs.openssh ];
       serviceConfig = {
         ExecStart = ''
           ${cfg.pkg}/bin/ghc-ci-server \
