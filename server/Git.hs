@@ -22,19 +22,11 @@ cloneAndPush :: Config -> BuildRequest -> IO (Maybe GitError)
 cloneAndPush Config{..} BuildRequest{..} = withEnv "GIT_SSH_COMMAND" sshCmd $ do
   r <- withTempDirectory reposDir "ghc-gitlab" $ \tmp -> runExceptT $ do
     let dir = gitDir tmp
-    ls reposDir
-    git ["clone", "--depth", "1", cloneUrl, tmp]
-    ls reposDir
-    ls tmp
+    git ["clone", cloneUrl, tmp]
     git [dir, "remote", "add", "gh", ghUrl]
-    ls reposDir
-    ls tmp
-    git [dir, "fetch", "origin", commit source]
-    ls reposDir
-    ls tmp
+    -- git [dir, "fetch", "origin", commit source]
+    git [dir, "submodule", "update", "--init", "--recursive"]
     git [dir, "checkout", "-f", "-b", branch, commit source]
-    ls reposDir
-    ls tmp
     git [dir, "push", "gh", branch]
 
   return $ either (Just . id) (const Nothing) r
