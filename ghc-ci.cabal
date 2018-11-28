@@ -16,7 +16,7 @@ library
   exposed-modules:     API, Types
   -- other-modules:
   -- other-extensions:
-  build-depends:       base >=4.9 && <4.12,
+  build-depends:       base >=4.9 && <4.13,
                        servant,
                        aeson,
                        circlehs,
@@ -30,7 +30,7 @@ executable ghc-ci-server
   main-is:             Main.hs
   other-modules:       Config, CircleCI, Git
   -- other-extensions:
-  build-depends:       base >=4.9 && <4.12,
+  build-depends:       base >=4.9 && <4.13,
                        aeson,
                        circlehs,
                        directory,
