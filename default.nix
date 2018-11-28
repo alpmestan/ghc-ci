@@ -1,9 +1,7 @@
-{ pkgs ? import <nixpkgs> {}}:
-
-with pkgs;
+{ haskellPackages, fetchFromGitHub }:
 
 let
-  hsPkgs = pkgs.haskell.packages.ghc822.override ({
+  hsPkgs = haskellPackages.override ({
     overrides = self: super: {
       circlehs = self.callPackage ./circlehs.nix { inherit fetchFromGitHub; };
       ghc-ci = super.callPackage ./ghc-ci.nix {};
