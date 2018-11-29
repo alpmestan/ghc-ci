@@ -23,12 +23,8 @@ in {
       description = "Github project name of the staging repo";
     };
     circleci-token-file = mkOption {
-      type = types.path;
+      type = types.str;
       description = "Path to a file containing the CircleCI API token";
-    };
-    github-push-keyfile = mkOption {
-      type = types.path;
-      description = "Path to the github key used for pushing to the staging repo";
     };
     workdir = mkOption {
       type = types.str;
@@ -57,7 +53,6 @@ in {
               --user=${cfg.github-user} \
               --project=${cfg.github-repo} \
               --circleci=${cfg.circleci-token-file} \
-              --key=${cfg.github-push-keyfile} \
               --repos=${cfg.workdir} \
               --gitlab=${cfg.gitlab-url} \
               --port=${toString cfg.port}

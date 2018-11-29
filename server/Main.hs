@@ -84,7 +84,6 @@ main = do
   cfg <- getConfig
   print cfg
 
-  checkFileExists (githubPrivateKeyFile cfg)
   checkFileExists (circleTokenFile cfg)
   createDirectoryIfMissing True (reposDir cfg)
 

@@ -7,7 +7,6 @@ data Config = Config
   { githubUser :: String
   , githubProject :: String
   , circleTokenFile :: FilePath
-  , githubPrivateKeyFile :: FilePath
   , reposDir :: FilePath
   , gitlabHost :: String
   , httpPort :: Int
@@ -32,12 +31,6 @@ cfgParser = Config
            <> short 'c'
            <> metavar "CIRCLECI_TOKEN_PATH"
            <> help "Path to a file that just contains the Circle CI token"
-            )
-        <*> strOption
-            ( long "key"
-           <> short 'k'
-           <> metavar "SSH_KEY_PATH"
-           <> help "Path to the SSH private key to use when pushing to github"
             )
         <*> strOption
             ( long "repos"

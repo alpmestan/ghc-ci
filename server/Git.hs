@@ -5,7 +5,6 @@ import Config
 import Types
 
 import Control.Monad.Except
-import System.Environment
 import System.Exit
 import System.FilePath
 import System.IO.Temp
@@ -13,13 +12,13 @@ import System.Process
 
 {- !!!
 
-   - The Config's private key must be accessible by the user running this
-     service.
    - github.com must be a known host.
+   - the user running this service must have an ssh key that
+     allows it to push to the github repository at @ghUrl@
 
    !!! -}
 cloneAndPush :: Config -> BuildRequest -> IO (Maybe GitError)
-cloneAndPush Config{..} BuildRequest{..} = withEnv "GIT_SSH_COMMAND" sshCmd $ do
+cloneAndPush Config{..} BuildRequest{..} = do
   r <- withTempDirectory reposDir "ghc-gitlab" $ \tmp -> runExceptT $ do
     let dir = gitDir tmp
     git ["clone", cloneUrl, tmp]
@@ -43,8 +42,6 @@ cloneAndPush Config{..} BuildRequest{..} = withEnv "GIT_SSH_COMMAND" sshCmd $ do
         ghUrl = "git@github.com:" ++ githubUser ++ "/" ++ githubProject
              ++ ".git"
 
-        sshCmd = "ssh -i " ++ githubPrivateKeyFile ++ " -F /dev/null"
-
 data GitError = GitError
   { gitArgs   :: [String]
   , gitExit   :: Int
@@ -58,13 +55,3 @@ git args = do
   case ex of
     ExitSuccess -> return ()
     ExitFailure n -> throwError (GitError args n out err)
-
-ls :: FilePath -> ExceptT GitError IO ()
-ls dir = liftIO (callCommand $ "ls -lah " ++ dir)
-
-withEnv :: String -> String -> IO a -> IO a
-withEnv key val act = do
-  setEnv key val
-  r <- act
-  unsetEnv key
-  return r
