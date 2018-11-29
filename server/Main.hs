@@ -47,13 +47,13 @@ createCircleCIBuild req = do
   case r of
     Left e -> throwError (CircleCIError e)
     Right a -> return $
-      let num  = number a
-          usr  = githubUser cfg
-          proj = githubProject cfg
-          link = "https://circleci.com/gh/"
-              ++ usr ++ "/"
-              ++ proj ++ "/"
-              ++ show num
+      let num@(BuildNumber n) = number a
+          usr                 = githubUser cfg
+          proj                = githubProject cfg
+          link                = "https://circleci.com/gh/"
+                             ++ usr ++ "/"
+                             ++ proj ++ "/"
+                             ++ show n
       in BuildDetails num link
 
 getJobStatus :: BuildNumber -> App BuildInfo
